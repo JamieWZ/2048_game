@@ -1,3 +1,4 @@
+import os
 import random
 
 
@@ -18,14 +19,14 @@ def create_board():
 
 
 def print_board(board):
-    print('-'*21)
+    print('-'*41)
     for row in board:
         print('|', end='\t')
         for num in row:
             print(num, end='\t')
         print('|', end='')
         print()
-    print('-' * 21)
+    print('-' * 41)
 
 
 def add_new_tile(board):
@@ -47,46 +48,50 @@ def add_new_tile(board):
 
 def move_up(board):
     transposed_board = transpose_board(board)
-    move_left(transposed_board)
+    score_added = move_left(transposed_board)
     result = transpose_board(transposed_board)
 
     for i in range(len(result)):
         for j in range(len(result[i])):
             board[i][j] = result[i][j]
-
+    return score_added
 
 def move_down(board):
     transposed_board = transpose_board(board)
-    move_right(transposed_board)
+    score_added = move_right(transposed_board)
     result = transpose_board(transposed_board)
 
     for i in range(len(result)):
         for j in range(len(result[i])):
             board[i][j] = result[i][j]
+    return score_added
 
 
 def move_left(board):
-    # step 1: move zeroes
+    score_added = 0
+    #move zeroes
     move_zeroes(board)
 
-    # step 2: merge
+    #merge
     for i in range(len(board)):
         for j in range(len(board[i]) - 1):
             if board[i][j] != 0 and board[i][j] == board[i][j + 1]:
                 board[i][j] *= 2
                 board[i][j + 1] = 0
+                score_added += board[i][j]
     move_zeroes(board)
+    return score_added
 
 
 def move_right(board):
     for row in board:
         row.reverse()
 
-    move_left(board)
+    score_added = move_left(board)
 
     for row in board:
         row.reverse()
-
+    return score_added
 
 def move_zeroes(board):
     for i in range(len(board)):
@@ -132,3 +137,7 @@ def is_game_over(board):
                 return False
 
     return True
+
+
+def clear_screen():
+    os.system('cls')
